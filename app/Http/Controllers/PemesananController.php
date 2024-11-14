@@ -47,29 +47,23 @@ class PemesananController extends Controller
             ->join('produksis', 'pemesanan.id_produk', '=', 'produksis.id')
             ->where('pemesanan.statusLaporan', 1);
 
-        // Kondisi waktu
-        if ($currentHour >= 15 && $currentHour < 17) { // Antara jam 3-5 sore
-            $query->where(function ($q) use ($currentTime) {
-                $q->where(function ($q1) use ($currentTime) {
-                    $q1->whereDate('pemesanan.tanggalPengiriman', $currentTime->format('Y-m-d'))
-                        ->whereTime('pemesanan.tanggalPengiriman', '18:00:00');
-                });
+        if ($currentHour >= 5 && $currentHour < 16) { // Antara jam 5 pagi - 4 sore
+            $today = Carbon::today();
+            $query->where(function ($q) use ($today) {
+                $q->whereDate('pemesanan.tanggalPengiriman', $today->format('Y-m-d'))
+                    ->whereTime('pemesanan.jamPengiriman', '18:00:00');
             });
-        } else if ($currentHour >= 3 && $currentHour < 5) { // Antara jam 3-5 pagi
+        } else { // Antara jam 4.01 sore - 4.59 pagi
             $tomorrow = Carbon::tomorrow();
             $query->where(function ($q) use ($tomorrow) {
-                $q->where(function ($q1) use ($tomorrow) {
-                    $q1->whereDate('pemesanan.tanggalPengiriman', $tomorrow->format('Y-m-d'))
-                        ->whereTime('pemesanan.tanggalPengiriman', '05:00:00');
-                })->orWhere(function ($q2) use ($tomorrow) {
-                    $q2->whereDate('pemesanan.tanggalPengiriman', $tomorrow->format('Y-m-d'))
-                        ->whereTime('pemesanan.tanggalPengiriman', '18:00:00');
-                });
+                $q->whereDate('pemesanan.tanggalPengiriman', $tomorrow->format('Y-m-d'))
+                    ->whereTime('pemesanan.jamPengiriman', '05:00:00');
             });
         }
 
         $summaryByProduct = $query->groupBy('produksis.id', 'produksis.namaProduk')
             ->get();
+
         $products = Produksi::all();
 
         return view('laporan.laporanOwner', compact('summaryByProduct', 'products'));
@@ -91,30 +85,21 @@ class PemesananController extends Controller
             ->join('produksis', 'pemesanan.id_produk', '=', 'produksis.id')
             ->where('pemesanan.statusLaporan', 1);
 
-        // Kondisi waktu
-        if ($currentHour >= 15 && $currentHour < 17) { // Antara jam 3-5 sore
-            $query->where(function ($q) use ($currentTime) {
-                $q->where(function ($q1) use ($currentTime) {
-                    $q1->whereDate('pemesanan.tanggalPengiriman', $currentTime->format('Y-m-d'))
-                        ->whereTime('pemesanan.tanggalPengiriman', '18:00:00');
-                });
+        if ($currentHour >= 5 && $currentHour < 16) { // Antara jam 5 pagi - 4 sore
+            $today = Carbon::today();
+            $query->where(function ($q) use ($today) {
+                $q->whereDate('pemesanan.tanggalPengiriman', $today->format('Y-m-d'))
+                    ->whereTime('pemesanan.jamPengiriman', '18:00:00');
             });
-        } else if ($currentHour >= 3 && $currentHour < 5) { // Antara jam 3-5 pagi
+        } else { // Antara jam 4.01 sore - 4.59 pagi
             $tomorrow = Carbon::tomorrow();
             $query->where(function ($q) use ($tomorrow) {
-                $q->where(function ($q1) use ($tomorrow) {
-                    $q1->whereDate('pemesanan.tanggalPengiriman', $tomorrow->format('Y-m-d'))
-                        ->whereTime('pemesanan.tanggalPengiriman', '05:00:00');
-                })->orWhere(function ($q2) use ($tomorrow) {
-                    $q2->whereDate('pemesanan.tanggalPengiriman', $tomorrow->format('Y-m-d'))
-                        ->whereTime('pemesanan.tanggalPengiriman', '18:00:00');
-                });
+                $q->whereDate('pemesanan.tanggalPengiriman', $tomorrow->format('Y-m-d'))
+                    ->whereTime('pemesanan.jamPengiriman', '05:00:00');
             });
         }
 
-        $orders = $query->orderBy('pemesanan.tanggalPengiriman')
-            ->get();
-
+        $orders = $query->orderBy('pemesanan.tanggalPengiriman')->get();
         return response()->json([
             'status' => 'success',
             'data' => $orders,
@@ -270,6 +255,54 @@ class PemesananController extends Controller
 
     }
 
+    public function getRiwayatPesanan($id)
+    {
+        if (Auth::user()->role == 'admin' || Auth::user()->role == 'owner') {
+            $riwayat = Pemesanan::with(['produk', 'user'])
+                ->where(function ($query) {
+                    $query->where('statusPembayaran', 1)
+                        ->orWhere('statusPengiriman', 1);
+                })
+                ->orderBy('created_at', 'DESC')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'pemesanan_id' => $item->id,
+                        'namaProduk' => $item->produk->namaProduk,
+                        'namaUsaha' => $item->user ? $item->user->nama : $item->nama,
+                        'harga' => $item->harga,
+                        'jumlahPemesanan' => $item->jumlahPemesanan,
+                        'harga' => $item->harga,
+                        'tanggalPengiriman' => $item->tanggalPengiriman . ' ' . $item->jamPengiriman,
+                        'statusPembayaran' => $item->statusPembayaran,
+                        'statusUser' => $item->user ? $item->user->status : 0,
+                        'statusPengiriman' => $item->statusPengiriman,
+                    ];
+                });
+        } else {
+            $riwayat = Pemesanan::where('id_user', $id)
+                ->with(['produk', 'user'])
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'pemesanan_id' => $item->id,
+                        'namaProduk' => $item->produk->namaProduk,
+                        'namaUsaha' => $item->user ? $item->user->nama : $item->nama,
+                        'harga' => $item->harga,
+                        'jumlahPemesanan' => $item->jumlahPemesanan,
+                        'harga' => $item->harga,
+                        'tanggalPengiriman' => $item->tanggalPengiriman . ' ' . $item->jamPengiriman,
+                        'statusPembayaran' => $item->statusPembayaran,
+                        'statusUser' => $item->user->status,
+                        'statusPengiriman' => $item->statusPengiriman,
+                    ];
+                });
+        }
+
+        return response()->json(['data' => $riwayat]);
+
+    }
+
     public function detail($id)
     {
         $pemesanan = Pemesanan::with(['produk', 'user'])->find($id);
@@ -304,6 +337,11 @@ class PemesananController extends Controller
             'message' => 'Pesanan berhasil dihapus',
         ]);
 
+    }
+
+    public function riwayatPesanan()
+    {
+        return view('riwayat.riwayatPesanan');
     }
 
 }

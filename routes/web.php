@@ -19,6 +19,9 @@ Route::controller(DashboardController::class)->name('dashboard.')->group(functio
     Route::get('/dashboard-guest', 'index')->name('guest');
 });
 Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
+Route::get('/rencana-produksi', [LaporanController::class, 'rencanaProduksi'])->name('laporan.rencanaProduksi');
+Route::get('/api/laporan/produksi', [LaporanController::class, 'apiData'])->name('api.laporan.produksi');
+Route::put('/api/laporan/produksi/{id}', [LaporanController::class, 'update'])->name('api.laporan.produksi.update');
 
 Route::controller(PemesananController::class)->name('pemesanan.')->group(function () {
     Route::post('/pemesanan', 'store')->name('store');
@@ -26,7 +29,9 @@ Route::controller(PemesananController::class)->name('pemesanan.')->group(functio
     Route::get('/api/laporan/pemesanan/daily', 'getDailyReport')->name('api.laporan.pemesanan.daily');
     Route::middleware('auth')->group(function () {
         Route::post('/send-laporan-owner', 'sendLaporanOwner')->name('sendLaporanOwner');
-        Route::get('/riwayat/pemesanan', 'riwayat')->name('riwayat');
+        Route::get('/pemesanan', 'riwayat')->name('riwayat');
+        Route::get('/riwayat/pemesanan', 'riwayatPesanan')->name('riwayatPesanan');
+        Route::get('/get/riwayat/pesanan/{id}', 'getRiwayatPesanan')->name('getRiwayatPesanan');
         Route::get('/get/riwayat/{id}', 'getRiwayat')->name('getRiwayat');
         Route::get('/update/{status}/{value}/{up}', 'updateStatus')->name('updateStatus');
         Route::get('/details/{id}', 'detail')->name('detail');

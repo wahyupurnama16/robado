@@ -37,7 +37,7 @@
 
     <!-- Production Plan Modal -->
     <div id="productionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+      <div class="bg-white rounded-lg p-6 w-full max-w-xl">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-lg font-semibold">Tambah Rencana Produksi</h3>
           <button class="closeModal text-gray-500 hover:text-gray-700">
@@ -49,24 +49,22 @@
 
         <form id="productionForm" class="space-y-4">
           @csrf
-          <div>
-            <label for="id_produk" class="block text-sm font-medium text-gray-700">Pilih Produk</label>
-            <select id="id_produk" name="id_produk" required
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brown-500 focus:ring-brown-500">
-              <option value="">Pilih Produk</option>
-              @foreach($products as $product)
-              <option value="{{ $product->id }}">{{ $product->namaProduk }}</option>
-              @endforeach
-            </select>
-          </div>
+          @foreach ($products as $product)
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <input type="hidden" name="produk[]" value="{{ $product->id }}">
+              <input type="text" required readonly
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brown-500 focus:ring-brown-500"
+                placeholder="" value="{{ $product->namaProduk }}">
+            </div>
 
-          <div>
-            <label for="jumlahProduksi" class="block text-sm font-medium text-gray-700">Jumlah Produksi</label>
-            <input type="number" id="jumlahProduksi" name="jumlahProduksi" required min="1"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brown-500 focus:ring-brown-500"
-              placeholder="Masukkan jumlah produksi">
+            <div>
+              <input type="number" id="jumlahProduksi" required min="1" name="jumlahProduksi[]"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brown-500 focus:ring-brown-500"
+                placeholder="Masukkan jumlah produksi">
+            </div>
           </div>
-
+          @endforeach
           <div class="flex justify-end space-x-3 mt-6">
             <button type="button"
               class="closeModal px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
@@ -85,86 +83,6 @@
   @section('js')
   <!-- Gridjs js -->
   <script src="{{ asset('assets/libs/gridjs/gridjs.umd.js') }}"></script>
-
-  <script>
-    $(document).ready(function() {
-        // Open modal
-        $('#btnAddProduction').click(function() {
-          $('#productionModal').removeClass('hidden').addClass('flex');
-        });
-  
-        // Close modal
-        $('.closeModal').click(function() {
-          $('#productionModal').removeClass('flex').addClass('hidden');
-        });
-  
-        // Close modal when clicking outside
-        $('#productionModal').click(function(e) {
-          if (e.target === this) {
-            $(this).removeClass('flex').addClass('hidden');
-          }
-        });
-  
-        // Reset form when modal is closed
-        $('#productionModal').on('hidden.bs.modal', function() {
-          $('#productionForm')[0].reset();
-        });
-  
-        // Form submission
-        $('#productionForm').submit(function(e) {
-          e.preventDefault();
-  
-          $.ajax({
-            url: "{{ route('laporan.store') }}",
-            type: "POST",
-            data: {
-              _token: $('meta[name="csrf-token"]').attr('content'),
-              id_produk: $('#id_produk').val(),
-              jumlahProduksi: $('#jumlahProduksi').val()
-            },
-            success: function(response) {
-              if (response.status === 'success') {
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Berhasil!',
-                  text: 'Rencana produksi berhasil ditambahkan',
-                  showConfirmButton: false,
-                  timer: 1500
-                }).then(function() {
-                  $('#productionModal').removeClass('flex').addClass('hidden');
-                  location.reload(); // Reload page to update data
-                });
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Oops...',
-                  text: response.message || 'Terjadi kesalahan saat menyimpan data'
-                });
-              }
-            },
-            error: function(xhr) {
-              let errorMessage = 'Terjadi kesalahan saat menyimpan data';
-              if (xhr.responseJSON && xhr.responseJSON.message) {
-                errorMessage = xhr.responseJSON.message;
-              }
-              
-              Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: errorMessage
-              });
-            }
-          });
-        });
-  
-        // Validate number input
-        $('#jumlahProduksi').on('input', function() {
-          if ($(this).val() < 1) {
-            $(this).val(1);
-          }
-        });
-      });
-  </script>
 
   <script>
     function formatRupiah(number) {
