@@ -7,7 +7,7 @@
           src="https://robado-bakery.vercel.app/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1523294587484-bae6cc870010%3Fq%3D80%26w%3D2802%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&w=1920&q=75"
           style="position: absolute; height: 100%; width: 100%; inset: 0px; object-fit: cover; color: transparent;">
         <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white">
-          <h2 class="text-4xl font-bold text-center mb-2 text-white">Robado Bakery</h2>
+          <h2 class="text-4xl font-bold text-center mb-2 text-white">Halo {{ Auth::user()->role }} ,Robado Bakery</h2>
           <p class="text-lg mb-4 text-center max-w-md">Pesan, Datang, &amp; Nikmati Roti Anda</p>
           {{-- <button
             class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-6 rounded-full transition-colors text-lg">Berlangganan</button>
@@ -17,6 +17,8 @@
     </section>
 
     <section>
+
+
       <h2 class="text-3xl font-bold mb-6 text-center">{{ Auth::user()->status == 2 ? "Ketersediaan Roti di Toko": "Mohon
         Konfirmasi Langganan Ke Admin" }}</h2>
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-2">

@@ -12,30 +12,26 @@ class LaporanController extends Controller
     public function store(Request $request)
     {
         try {
-            // Validate the incoming arrays
             $validated = $request->validate([
-                'product.*' => 'required|exists:produksis,id',
+                'produk.*' => 'required|exists:produksis,id',
                 'jumlahProduksi.*' => 'required|integer|min:1',
             ]);
 
-            // Start a database transaction
             DB::beginTransaction();
 
             $createdReports = [];
 
-            // Loop through the products and create reports
-            foreach ($request->product as $index => $productId) {
+            foreach ($request->produk as $index => $productId) {
                 $laporan = Laporan::create([
                     'id_produk' => $productId,
                     'jumlahProduksi' => $request->jumlahProduksi[$index],
-                    'hasilProduksi' => 0, // Default value
-                    'statusProduksi' => 0, // Default value
+                    'hasilProduksi' => 0,
+                    'statusProduksi' => 0,
                 ]);
 
                 $createdReports[] = $laporan;
             }
 
-            // Commit the transaction
             DB::commit();
 
             return response()->json([
@@ -43,14 +39,6 @@ class LaporanController extends Controller
                 'message' => 'Rencana produksi berhasil ditambahkan',
                 'data' => $createdReports,
             ], 200);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Validasi gagal',
-                'errors' => $e->errors(),
-            ], 422);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -60,7 +48,6 @@ class LaporanController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
-
     }
 
     public function rencanaProduksi()

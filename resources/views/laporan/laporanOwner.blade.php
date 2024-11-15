@@ -47,7 +47,7 @@
           </button>
         </div>
 
-        <form id="productionForm" class="space-y-4">
+        <form id="productionUpdateForm" class="space-y-4">
           @csrf
           @foreach ($products as $product)
           <div class="grid grid-cols-2 gap-2">
@@ -85,7 +85,83 @@
   <script src="{{ asset('assets/libs/gridjs/gridjs.umd.js') }}"></script>
 
   <script>
-    function formatRupiah(number) {
+    document.addEventListener('DOMContentLoaded', function() {
+                // Open modal
+                document.getElementById('btnAddProduction').addEventListener('click', function() {
+                    const modal = document.getElementById('productionModal');
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                });
+
+                // Close modal
+                document.querySelectorAll('.closeModal').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const modal = document.getElementById('productionModal');
+                        modal.classList.remove('flex');
+                        modal.classList.add('hidden');
+                    });
+                });
+
+                // Close on outside click
+                document.getElementById('productionModal').addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('flex');
+                        this.classList.add('hidden');
+                    }
+                });
+
+                // Form submission
+                document.getElementById('productionUpdateForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const produk = Array.from(document.getElementsByName('produk[]')).map(input => input.value);
+                    const jumlahProduksi = Array.from(document.getElementsByName('jumlahProduksi[]')).map(
+                        input => input.value);
+
+                    const formData = {
+                        produk: produk,
+                        jumlahProduksi: jumlahProduksi,
+                        _token: document.querySelector('input[name="_token"]').value
+                    };
+
+                    fetch('/laporan', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': formData._token
+                            },
+                            body: JSON.stringify(formData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Rencana produksi berhasil ditambahkan',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    const modal = document.getElementById('productionModal');
+                                    modal.classList.remove('flex');
+                                    modal.classList.add('hidden');
+                                    location.reload();
+                                });
+                            } else {
+                                throw new Error(data.message || 'Terjadi kesalahan');
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: error.message || 'Terjadi kesalahan saat menyimpan data'
+                            });
+                        });
+                });
+            });
+
+            function formatRupiah(number) {
                 if (!number || isNaN(number)) return 'Rp 0';
                 return new Intl.NumberFormat('id-ID', {
                     style: 'currency',
@@ -111,42 +187,69 @@
                 }
             }
 
+            function getStatusPembayaran(status) {
+                const badges = {
+                    0: '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-200 text-red-800">Belum Dibayar</span>',
+                    1: '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-200 text-green-800">Sudah Dibayar</span>'
+                };
+                return badges[status] || badges[0];
+            }
+
+            function getStatusPengiriman(status) {
+                const badges = {
+                    0: '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-200 text-gray-800">Menunggu</span>',
+                    1: '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-200 text-yellow-800">Dikirim</span>',
+                    2: '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-200 text-green-800">Selesai</span>'
+                };
+                return badges[status] || badges[0];
+            }
+
             document.getElementById("table-gridjs") &&
                 new gridjs.Grid({
                     columns: [{
                             name: "No",
                             width: "70px",
-                            data: (row) => row.id
+                            formatter: (_, row) => row.cells[0].data
                         },
                         {
                             name: "Nama Pemesan",
                             width: "150px",
-                            data: (row) => row.nama || 'Pelanggan Umum'
+                            data: row => row.nama || 'Pelanggan Umum'
                         },
                         {
                             name: "Produk",
                             width: "150px",
-                            data: (row) => row.namaProduk
+                            data: row => row.namaProduk
                         },
                         {
                             name: "Jumlah",
                             width: "100px",
-                            data: (row) => row.jumlahPemesanan
+                            data: row => row.jumlahPemesanan
                         },
                         {
                             name: "Harga Satuan",
                             width: "130px",
-                            data: (row) => gridjs.html(formatRupiah(row.harga))
+                            data: row => gridjs.html(formatRupiah(row.harga))
                         },
                         {
                             name: "Total Harga",
                             width: "150px",
-                            data: (row) => gridjs.html(formatRupiah(row.harga * row.jumlahPemesanan))
+                            data: row => gridjs.html(formatRupiah(row.totalHarga))
+                        },
+                        {
+                            name: "Status Pembayaran",
+                            width: "150px",
+                            data: row => gridjs.html(getStatusPembayaran(row.statusPembayaran))
+                        },
+                        {
+                            name: "Status Pengiriman",
+                            width: "150px",
+                            data: row => gridjs.html(getStatusPengiriman(row.statusPengiriman))
                         },
                         {
                             name: "Waktu Pengiriman",
                             width: "200px",
-                            data: (row) => formatDate(row.tanggalPengiriman + ' ' + row.jamPengiriman)
+                            data: row => formatDate(row.tanggalPengiriman + ' ' + row.jamPengiriman)
                         }
                     ],
                     pagination: {

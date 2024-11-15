@@ -78,7 +78,18 @@
                         @endif
 
 
-                        @if (Auth::user() && (Auth::user()->role === 'baker' || Auth::user()->role === 'owner'))
+                        @if (Auth::user() && (Auth::user()->role === 'owner'))
+                        <li class="menu-item">
+                            <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
+                                href="{{ route('pemesanan.laporanOwner') }}">
+                                <i
+                                    class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">summarize</i>
+                                Rencana Produksi
+                            </a>
+                        </li>
+                        @endif
+
+                        @if (Auth::user() && (Auth::user()->role === 'baker'))
                         <li class="menu-item">
                             <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
                                 href="{{ route('laporan.rencanaProduksi') }}">
@@ -90,7 +101,7 @@
                         @endif
 
 
-                        @if (Auth::user())
+                        @if (Auth::user() && (Auth::user()->role !== 'owner' && Auth::user()->role !== 'baker'))
                         <li class="menu-item">
                             <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
                                 href="{{ route('pemesanan.riwayat') }}">

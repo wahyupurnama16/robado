@@ -6,6 +6,7 @@
 
   <main class="flex-grow p-4 mx-auto w-full">
     <div class="mb-8">
+
       <h2 class="text-center text-2xl text-brown-600 font-semibold mb-4">Laporan Rencana Produksi</h2>
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -22,6 +23,7 @@
           <p class="text-2xl font-bold text-green-600">{{ $selesai ?? 0 }}</p>
         </div>
       </div>
+
     </div>
 
     <div class="card">
