@@ -30,7 +30,7 @@ Route::controller(PemesananController::class)->name('pemesanan.')->group(functio
     Route::middleware('auth')->group(function () {
         Route::post('/send-laporan-owner', 'sendLaporanOwner')->name('sendLaporanOwner');
         Route::get('/pemesanan', 'riwayat')->name('riwayat');
-        Route::get('/riwayat/pemesanan', 'riwayatPesanan')->name('riwayatPesanan');
+        Route::get('/riwayat/transaksi', 'riwayatPesanan')->name('riwayatPesanan');
         Route::get('/get/riwayat/pesanan/{id}', 'getRiwayatPesanan')->name('getRiwayatPesanan');
         Route::get('/get/riwayat/{id}', 'getRiwayat')->name('getRiwayat');
         Route::get('/update/{status}/{value}/{up}', 'updateStatus')->name('updateStatus');

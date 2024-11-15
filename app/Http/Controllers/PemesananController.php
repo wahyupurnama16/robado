@@ -282,6 +282,10 @@ class PemesananController extends Controller
         } else {
             $riwayat = Pemesanan::where('id_user', $id)
                 ->with(['produk', 'user'])
+                ->where(function ($query) {
+                    $query->where('statusPembayaran', 1)
+                        ->orWhere('statusPengiriman', 1);
+                })
                 ->get()
                 ->map(function ($item) {
                     return [
