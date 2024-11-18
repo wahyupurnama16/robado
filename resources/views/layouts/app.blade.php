@@ -115,16 +115,35 @@
                         </li>
                         @endif
 
+                        @if (Auth::user())
                         <li class="menu-item">
                             <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
                                 href="{{ route('pemesanan.riwayatPesanan') }}">
                                 <i
                                     class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">Inventory_2</i>
-                                Riwayat Pesanan
+                                Riwayat {{ Auth::user() && Auth::user()->role == 'admin' ? 'Transaksi' : '' }}
+                            </a>
+                        </li>
+                        @endif
+
+
+                        <li class="menu-item">
+                            <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
+                                href="{{ route('dashboard.aturanBerlangganan') }}">
+                                <i
+                                    class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">handshake</i>
+                                Aturan Berlangganan
                             </a>
                         </li>
 
-
+                        <li class="menu-item">
+                            <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
+                                href="{{ route('dashboard.tentangKami') }}">
+                                <i
+                                    class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">store</i>
+                                Tentang Kami
+                            </a>
+                        </li>
 
 
                         <li class="menu-item">

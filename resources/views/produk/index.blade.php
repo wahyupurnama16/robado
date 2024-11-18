@@ -49,6 +49,11 @@
                                         <input type="hidden" id="oldImage" name="oldImage">
                                     </div>
                                     <div class="mb-4">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi</label>
+                                        <textarea name="deskripsi" id="deskripsi" cols="30" rows="10"
+                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+                                    </div>
+                                    <div class="mb-4">
                                         <label class="block text-gray-700 text-sm font-bold mb-2">Jumlah</label>
                                         <input type="number" id="jumlahProduk" name="jumlahProduk"
                                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -123,11 +128,13 @@
                 $('#modalTitle').text(mode === 'add' ? 'Tambah Produk' : 'Edit Produk');
                 
                 if (mode === 'edit' && data) {
+                    console.log(data);
                     $('#produkId').val(data.id);
                     $('#namaProduk').val(data.namaProduk);
                     $('#jumlahProduk').val(data.jumlahProduk);
                     $('#hargaProduk').val(data.hargaProduk);
                     $('#oldImage').val(data.gambar);
+                    $('textarea#deskripsi').val(data.deskripsi);
 
                     // Show existing image
                     if (data.gambar) {
@@ -176,15 +183,21 @@
                         formatter: (cell) => formatRupiah(cell)
                     },
                     {
+                    id: 'deskripsi',
+                    name: 'Deskripsi',
+                    },
+                    {
                         id: 'actions',
                         name: 'Actions',
                         formatter: (_, row) => {
+                            console.log(row);
                             const data = {
                                 id: row.cells[0].data,
                                 namaProduk: row.cells[1].data,
                                 gambar: row.cells[2].data,
                                 jumlahProduk: row.cells[3].data,
-                                hargaProduk: row.cells[4].data.toString().replace(/[^0-9]/g, '')
+                                hargaProduk: row.cells[4].data.toString().replace(/[^0-9]/g, ''),
+                                deskripsi: row.cells[5].data,
                             };
                             
                             return gridjs.html(`

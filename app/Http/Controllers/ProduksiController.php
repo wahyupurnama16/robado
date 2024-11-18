@@ -27,6 +27,7 @@ class ProduksiController extends Controller
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'jumlahProduk' => 'required|numeric',
             'hargaProduk' => 'required|numeric',
+            'deskripsi' => 'required',
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -40,6 +41,7 @@ class ProduksiController extends Controller
             'gambar' => $imageName ?? null,
             'jumlahProduk' => $request->jumlahProduk,
             'hargaProduk' => $request->hargaProduk,
+            'deskripsi' => $request->deskripsi,
         ]);
 
         return response()->json([
@@ -56,6 +58,7 @@ class ProduksiController extends Controller
             'jumlahProduk' => 'required|numeric',
             'hargaProduk' => 'required|numeric',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'deskripsi' => 'required',
         ]);
 
         $produk = Produksi::findOrFail($id);
@@ -76,6 +79,7 @@ class ProduksiController extends Controller
         $produk->namaProduk = $request->namaProduk;
         $produk->jumlahProduk = $request->jumlahProduk;
         $produk->hargaProduk = $request->hargaProduk;
+        $produk->deskripsi = $request->deskripsi;
         $produk->save();
 
         return response()->json([

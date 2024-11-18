@@ -40,11 +40,11 @@ class PemesananController extends Controller
         // Initialize query builder
         $query = DB::table('pemesanan')
             ->select(
-                'produksis.namaProduk as namaProduk',
+                'produk.namaProduk as namaProduk',
                 DB::raw('SUM(pemesanan.jumlahPemesanan) as total_pesanan'),
                 DB::raw('SUM(pemesanan.jumlahPemesanan * pemesanan.harga) as total_nilai')
             )
-            ->join('produksis', 'pemesanan.id_produk', '=', 'produksis.id')
+            ->join('produk', 'pemesanan.id_produk', '=', 'produk.id')
             ->where('pemesanan.statusLaporan', 1);
 
         if ($currentHour >= 5 && $currentHour < 16) { // Antara jam 5 pagi - 4 sore
@@ -61,7 +61,7 @@ class PemesananController extends Controller
             });
         }
 
-        $summaryByProduct = $query->groupBy('produksis.id', 'produksis.namaProduk')
+        $summaryByProduct = $query->groupBy('produk.id', 'produk.namaProduk')
             ->get();
 
         $products = Produksi::all();
@@ -79,10 +79,10 @@ class PemesananController extends Controller
             ->select(
                 'pemesanan.*',
                 'users.nama',
-                'produksis.namaProduk as namaProduk'
+                'produk.namaProduk as namaProduk'
             )
             ->leftJoin('users', 'pemesanan.id_user', '=', 'users.id')
-            ->join('produksis', 'pemesanan.id_produk', '=', 'produksis.id')
+            ->join('produk', 'pemesanan.id_produk', '=', 'produk.id')
             ->where('pemesanan.statusLaporan', 1);
 
         if ($currentHour >= 5 && $currentHour < 16) { // Antara jam 5 pagi - 4 sore
@@ -246,6 +246,37 @@ class PemesananController extends Controller
                         'tanggalPengiriman' => $item->tanggalPengiriman . ' ' . $item->jamPengiriman,
                         'statusPembayaran' => $item->statusPembayaran,
                         'statusUser' => $item->user->status,
+                        'statusPengiriman' => $item->statusPengiriman,
+                    ];
+                });
+        }
+
+        return response()->json(['data' => $riwayat]);
+
+    }
+
+    public function getRiwayatDashboard($id)
+    {
+        if (Auth::user()->role == 'admin' || Auth::user()->role == 'owner') {
+            $riwayat = Pemesanan::with(['produk', 'user'])
+                ->where(function ($query) {
+                    $query->where('statusPembayaran', 0)
+                        ->orWhere('statusPengiriman', 0);
+                })
+                ->where('tanggalPengiriman', date('Y-m-d'))
+                ->orderBy('created_at', 'DESC')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'pemesanan_id' => $item->id,
+                        'namaProduk' => $item->produk->namaProduk,
+                        'namaUsaha' => $item->user ? $item->user->nama : $item->nama,
+                        'harga' => $item->harga,
+                        'jumlahPemesanan' => $item->jumlahPemesanan,
+                        'harga' => $item->harga,
+                        'tanggalPengiriman' => $item->tanggalPengiriman . ' ' . $item->jamPengiriman,
+                        'statusPembayaran' => $item->statusPembayaran,
+                        'statusUser' => $item->user ? $item->user->status : 0,
                         'statusPengiriman' => $item->statusPengiriman,
                     ];
                 });

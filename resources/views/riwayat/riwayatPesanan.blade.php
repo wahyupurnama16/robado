@@ -1,77 +1,77 @@
 <x-app-layout>
-  @section('css')
-  <!-- Gridjs css -->
-  <link rel="stylesheet" href="{{ asset('assets/libs/gridjs/theme/mermaid.min') }}.css">
-  @endsection
-  <main class="flex-grow p-4 mx-auto w-full">
-    <h2 class="text-center text-2xl text-brown-600 font-semibold mb-8">Pemesanan</h2>
-    <div class="card">
+    @section('css')
+    <!-- Gridjs css -->
+    <link rel="stylesheet" href="{{ asset('assets/libs/gridjs/theme/mermaid.min') }}.css">
+    @endsection
+    <main class="flex-grow p-4 mx-auto w-full">
+        <h2 class="text-center text-2xl text-brown-600 font-semibold mb-8">Pemesanan</h2>
+        <div class="card">
 
-      @if (Auth::user() && Auth::user()->role == 'admin')
-
-      <!-- Button to trigger modal -->
-      <div class="flex justify-end items-center mb-6 absolute top-8 right-7 z-10">
-        <button type="button" onclick="openModal()"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Kirim Laporan
-        </button>
-      </div>
-
-      <!-- Modal -->
-      <div id="reportModal"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-20 transition-opacity duration-300">
-        <div
-          class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white transform transition-transform duration-300">
-          <div class="mt-3">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Pilih Waktu Pengiriman Laporan</h3>
-            <form action="{{ route('pemesanan.sendLaporanOwner') }}" method="POST">
-              @csrf
-              <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="tanggal">
-                  Tanggal Pemesanan
-                </label>
-                <input type="date" name="tanggal" id="tanggal"
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required>
-              </div>
-              <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="waktu">
-                  Waktu Pengiriman
-                </label>
-                <select name="waktu" id="waktu"
-                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required>
-                  <option value="">Pilih Waktu</option>
-                  <option value="05:00:00">Pagi (05:00)</option>
-                  <option value="18:00:00">Sore (18:00)</option>
-                </select>
-              </div>
-              <div class="flex items-center justify-end mt-6">
-                <button type="button" onclick="closeModal()"
-                  class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">
-                  Batal
+            @if (Auth::user() && Auth::user()->role == 'admin' && !Request::is('riwayat/*'))
+            <!-- Button to trigger modal -->
+            <div class="flex justify-end items-center mb-6 absolute top-8 right-7 z-10">
+                <button type="button" onclick="openModal()"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Kirim Laporan
                 </button>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                  Kirim
-                </button>
-              </div>
-            </form>
-          </div>
+            </div>
+
+            <!-- Modal -->
+            <div id="reportModal"
+                class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-20 transition-opacity duration-300">
+                <div
+                    class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white transform transition-transform duration-300">
+                    <div class="mt-3">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Pilih Waktu Pengiriman Laporan</h3>
+                        <form action="{{ route('pemesanan.sendLaporanOwner') }}" method="POST">
+                            @csrf
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="tanggal">
+                                    Tanggal Pemesanan
+                                </label>
+                                <input type="date" name="tanggal" id="tanggal"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="waktu">
+                                    Waktu Pengiriman
+                                </label>
+                                <select name="waktu" id="waktu"
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    required>
+                                    <option value="">Pilih Waktu</option>
+                                    <option value="05:00:00">Pagi (05:00)</option>
+                                    <option value="18:00:00">Sore (18:00)</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center justify-end mt-6">
+                                <button type="button" onclick="closeModal()"
+                                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2">
+                                    Batal
+                                </button>
+                                <button type="submit"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    Kirim
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            @endif
+            <div class="card-body">
+                <div id="table-gridjs"></div>
+            </div>
         </div>
-      </div>
+    </main>
+    @section('js')
+    <!-- Gridjs js -->
+    <script src="{{ asset('assets/libs/gridjs/gridjs.umd.js') }}"></script>
 
-      @endif
-      <div class="card-body">
-        <div id="table-gridjs"></div>
-      </div>
-    </div>
-  </main>
-  @section('js')
-  <!-- Gridjs js -->
-  <script src="{{ asset('assets/libs/gridjs/gridjs.umd.js') }}"></script>
-
-  <script>
-    function openModal() {
+    <script>
+        function openModal() {
                 const modal = document.getElementById('reportModal');
                 modal.classList.remove('hidden');
                 setTimeout(() => {
@@ -278,6 +278,6 @@
                         },
                     }
                 }).render(document.getElementById("table-gridjs"));
-  </script>
-  @endsection
+    </script>
+    @endsection
 </x-app-layout>

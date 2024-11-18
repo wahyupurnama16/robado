@@ -13,7 +13,7 @@ class LaporanController extends Controller
     {
         try {
             $validated = $request->validate([
-                'produk.*' => 'required|exists:produksis,id',
+                'produk.*' => 'required|exists:produk,id',
                 'jumlahProduksi.*' => 'required|integer|min:1',
             ]);
 
@@ -64,10 +64,10 @@ class LaporanController extends Controller
     public function apiData()
     {
         $data = DB::table('laporan')
-            ->join('produksis', 'laporan.id_produk', '=', 'produksis.id')
+            ->join('produk', 'laporan.id_produk', '=', 'produk.id')
             ->select(
                 'laporan.*',
-                'produksis.namaProduk as nama_produk'
+                'produk.namaProduk as nama_produk'
             )
             ->orderBy('laporan.created_at', 'desc')
             ->get();

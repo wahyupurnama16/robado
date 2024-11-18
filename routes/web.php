@@ -12,11 +12,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Route::controller(DashboardController::class)->name('dashboard.')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', 'index')->name('index');
     });
     Route::get('/dashboard-guest', 'index')->name('guest');
+    Route::get('/aturan-berlangganan', 'aturanBerlangganan')->name('aturanBerlangganan');
+    Route::get('/tentang-kami', 'tentangKami')->name('tentangKami');
 });
 Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
 Route::get('/rencana-produksi', [LaporanController::class, 'rencanaProduksi'])->name('laporan.rencanaProduksi');
@@ -33,6 +36,7 @@ Route::controller(PemesananController::class)->name('pemesanan.')->group(functio
         Route::get('/riwayat/transaksi', 'riwayatPesanan')->name('riwayatPesanan');
         Route::get('/get/riwayat/pesanan/{id}', 'getRiwayatPesanan')->name('getRiwayatPesanan');
         Route::get('/get/riwayat/{id}', 'getRiwayat')->name('getRiwayat');
+        Route::get('/get/riwayat/dashboard/{id}', 'getRiwayatDashboard')->name('getRiwayatDashboard');
         Route::get('/update/{status}/{value}/{up}', 'updateStatus')->name('updateStatus');
         Route::get('/details/{id}', 'detail')->name('detail');
         Route::post('/update/details/{id}', 'updatePesananDetails')->name('updatePesananDetails');

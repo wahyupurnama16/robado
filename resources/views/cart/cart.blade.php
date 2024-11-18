@@ -171,10 +171,10 @@
                     function formatDate(date) {
                         return date.toISOString().split('T')[0];
                     }
-                    
+
                     // Jika tanggal yang dipilih adalah hari ini
                     if (selectedDate.toDateString() === now.toDateString()) {
-                      console.log('ada');
+                        console.log('ada');
                         // Kondisi 1: 05:00 - 16:00
                         if (currentHour >= 05 && currentHour <= 16) {
                             const tomorrow = addDays(now, 1);
@@ -191,13 +191,13 @@
                         // Kondisi 3: 22:01 - 05:01 maka muncul 2 hari lagi 
                         else if ((currentHour === 22 && currentMinutes > 0) || currentHour === 23) {
                             const dayAfterTomorrow = addDays(now, 2);
-                          
+
                             $('input[name="date"]').val(formatDate(dayAfterTomorrow));
                             deliverySelect.append('<option value="05">05:00 Wita</option>');
                             deliverySelect.append('<option value="18">18:00 Wita</option>');
                         }
                     } else if (selectedDate > now) {
-                      console.log('tidak');
+                        console.log('tidak');
                         const diffInDays = Math.floor((selectedDate - now) / (1000 * 60 * 60 * 24));
                         // Jika besok
                         if (diffInDays === 1) {
@@ -251,17 +251,17 @@
                         data: formData,
                         success: function(response) {
                             if (response) {
-                                console.log(response);
+                                // if(response.)
                                 sessionStorage.removeItem('cart');
                                 Swal.fire({
                                     title: 'Berhasil',
-                                    text: 'Pesanana berhasil, ditunggu kedatanganya di toko.',
+                                    text: 'Pesanan berhasil, {{ Auth::user() ? 'Terima kasih ' . Auth::user()->nama : 'ditunggu kedatanganya di toko.' }}',
                                     icon: 'success',
                                     confirmButtonText: 'Ok'
 
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        location.href = '/riwayat/pemesanan';
+                                        location.href = '{{ Auth::user() ?  route('pemesanan.riwayat') : route('dashboard.guest') }}';
                                     }
                                 });
                             } else {
@@ -276,9 +276,18 @@
                         },
                         error: function(xhr, status, error) {
                             // Tangani error jika terjadi
-                            console.log(error);
-                            // $('#response').html('Terjadi kesalahan: ' + error);
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Mohon Lengkapi Data dengan Benar',
+                                icon: 'error',
+
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.href = '{{ route('cart.index') }}';
+                                }
+                            });
                         }
+
                     });
                 });
 
