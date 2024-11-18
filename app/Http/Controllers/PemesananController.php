@@ -263,8 +263,7 @@ class PemesananController extends Controller
                     $query->where('statusPembayaran', 0)
                         ->orWhere('statusPengiriman', 0);
                 })
-                ->where('id_user', null)
-                ->where('tanggalPengiriman', date('Y-m-d'))
+                ->whereNull('tanggalPengiriman')
                 ->orderBy('created_at', 'DESC')
                 ->get()
                 ->map(function ($item) {
