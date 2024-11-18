@@ -8,7 +8,7 @@
         <section class="mb-8">
             <div class="relative h-60 rounded-lg overflow-hidden shadow-lg">
                 <img alt="Bakery banner" loading="lazy" decoding="async" data-nimg="fill" sizes="100vw"
-                    src="https://robado-bakery.vercel.app/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1523294587484-bae6cc870010%3Fq%3D80%26w%3D2802%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&w=1920&q=75"
+                    src="{{ asset('/storage/produk/'. $produk->gambar) }}"
                     style="position: absolute; height: 100%; width: 100%; inset: 0px; object-fit: cover; color: transparent;">
                 <div
                     class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white">
