@@ -47,6 +47,8 @@
 
                 <div class="hs-accordion-group h-[calc(100%-72px)] p-4 ps-0" data-simplebar>
                     <ul class="admin-menu flex w-full flex-col gap-1.5">
+
+                        @if (!Auth::user() || Auth::user() && Auth::user()->role !== 'baker')
                         <li class="menu-item">
                             <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
                                 href="{{ Auth::user() ?  route('dashboard.index') : route('dashboard.guest') }}">
@@ -55,7 +57,7 @@
                                 Home
                             </a>
                         </li>
-
+                        @endif
                         @if(Auth::user() && Auth::user()->role === 'admin')
                         <li class="menu-item">
                             <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
@@ -126,7 +128,7 @@
                         </li>
                         @endif
 
-
+                        @if (!Auth::user())
                         <li class="menu-item">
                             <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
                                 href="{{ route('dashboard.aturanBerlangganan') }}">
@@ -144,7 +146,7 @@
                                 Tentang Kami
                             </a>
                         </li>
-
+                        @endif
                         <li class="menu-item">
                             <div type="submit"
                                 class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700">

@@ -15,10 +15,6 @@
           <p class="text-2xl font-bold text-blue-600">{{ $totalRencana ?? 0 }}</p>
         </div>
         <div class="bg-white rounded-lg shadow p-4">
-          <h3 class="text-lg font-semibold text-gray-700">Dalam Proses</h3>
-          <p class="text-2xl font-bold text-yellow-600">{{ $dalamProses ?? 0 }}</p>
-        </div>
-        <div class="bg-white rounded-lg shadow p-4">
           <h3 class="text-lg font-semibold text-gray-700">Selesai</h3>
           <p class="text-2xl font-bold text-green-600">{{ $selesai ?? 0 }}</p>
         </div>

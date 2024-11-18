@@ -15,10 +15,21 @@ class DashboardController extends Controller
         $terkirim = Pemesanan::where("statusPengiriman", 1)->where("tanggalPengiriman", date('Y-m-d'))->count();
         $belumTerkirim = Pemesanan::where("statusPengiriman", 0)->where("tanggalPengiriman", date('Y-m-d'))->count();
         $pesanan = Pemesanan::where("tanggalPengiriman", date('Y-m-d'))->count();
+        $totalPesananBulan = Pemesanan::whereMonth('tanggalPengiriman', now()->month)
+            ->whereYear('tanggalPengiriman', now()->year)
+            ->where('statusPengiriman', 1)
+            ->where('statusPembayaran', 1)
+            ->count();
+
+        $totalPendapatan = Pemesanan::whereMonth('tanggalPengiriman', now()->month)
+            ->whereYear('tanggalPengiriman', now()->year)
+            ->where('statusPengiriman', 1)
+            ->where('statusPembayaran', 1)
+            ->sum('totalHarga');
         if (Auth::user()) {
-            return view('dashboard/dashboard', compact('produks', 'terkirim', 'belumTerkirim', 'pesanan'));
+            return view('dashboard/dashboard', compact('produks', 'terkirim', 'belumTerkirim', 'pesanan', 'totalPesananBulan', 'totalPendapatan'));
         } else {
-            return view('dashboard/dashboardGuest', compact('produks', 'terkirim', 'belumTerkirim', 'pesanan'));
+            return view('dashboard/dashboardGuest', compact('produks', 'terkirim', 'belumTerkirim', 'pesanan', 'totalPesananBulan', 'totalPendapatan'));
         }
     }
 

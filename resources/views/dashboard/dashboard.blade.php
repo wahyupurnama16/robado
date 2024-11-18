@@ -65,9 +65,39 @@
                     </div>
                 </a>
             </div>
+            @elseif(Auth::user()->role == 'owner')
+            <h2 class="text-3xl font-bold mb-6 text-center">{{ date('M
+                Y') }}</h2>
+            <div class="grid grid-cols-3 mb-9">
+                <a href="#"
+                    class="grid grid-cols-3 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+
+                    <h5 class="mb-2 col-span-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        Jumlah Pesanan Bulan
+
+                    </h5>
+                    <div class="flex items-center justify-center">
+                        <p class="text-lg font-bold inline-block  text-gray-700 dark:text-gray-400">
+                            {{ $totalPesananBulan }} Pesanan</p>
+                    </div>
+                </a>
+
+                <a href="#"
+                    class="grid grid-cols-3 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+
+                    <h5 class="mb-2 col-span-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        Total Pendapatan Bulan
+                    </h5>
+                    <div class="flex items-center justify-center">
+                        <p class="text-lg font-bold inline-block  text-gray-700 dark:text-gray-400">
+                            Rp. {{ number_format($totalPendapatan) }}</p>
+                    </div>
+                </a>
+
+            </div>
             @endif
         </section>
-        @if (Auth::user()->role !== 'admin')
+        @if (Auth::user() && Auth::user()->role !== 'admin' && Auth::user()->role !== 'owner')
         <section>
 
 
@@ -126,7 +156,7 @@
 
             </div>
         </section>
-        @else
+        @elseif(Auth::user() && Auth::user()->role == 'admin')
         <div class="card-body">
             <div id="table-gridjs"></div>
         </div>
