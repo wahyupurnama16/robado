@@ -263,6 +263,7 @@ class PemesananController extends Controller
                     $query->where('statusPembayaran', 0)
                         ->orWhere('statusPengiriman', 0);
                 })
+                ->where('id_user', null)
                 ->where('tanggalPengiriman', date('Y-m-d'))
                 ->orderBy('created_at', 'DESC')
                 ->get()
@@ -292,7 +293,7 @@ class PemesananController extends Controller
             $riwayat = Pemesanan::with(['produk', 'user'])
                 ->where(function ($query) {
                     $query->where('statusPembayaran', 1)
-                        ->orWhere('statusPengiriman', 1);
+                        ->Where('statusPengiriman', 1);
                 })
                 ->orderBy('created_at', 'DESC')
                 ->get()

@@ -6,6 +6,9 @@
         src="https://robado-bakery.vercel.app/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1604551969716-5d6d8f77b241%3Fq%3D80%26w%3D2940%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&w=1920&q=75"
         width="100%" style="height: 300px; object-fit:cover;border-radius:20px;">
     </div>
+    <br>
+    <br>
+    <br>
     <section>
       <h2 class="text-lg md:text-xl font-semibold text-brown-600 mb-2">Robado Bakery</h2>
       <p>Toko Robado Bakery adalah sebuah usaha roti yang berlokasi di Dusun Sebunibus, Desa Sakti, Kecamatan Nusa
