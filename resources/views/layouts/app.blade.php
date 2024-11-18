@@ -145,7 +145,6 @@
                             </a>
                         </li>
 
-
                         <li class="menu-item">
                             <div type="submit"
                                 class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700">
@@ -155,7 +154,7 @@
                                     <button type="submit" class="flex items-center gap-x-3.5 ">
                                         <i class=" material-symbols-rounded font-light text-2xl transition-all
                                         group-hover:fill-1"><span class="material-symbols-rounded">
-                                                logout
+                                                {{ Auht::user() ? 'logout' : 'Login' }}
                                             </span></i>
                                         Keluar
                                     </button>
