@@ -255,6 +255,13 @@ class PemesananController extends Controller
 
     }
 
+    public function formatPhone($number)
+    {
+        $clean = preg_replace('/[^0-9]/', '', $number);
+        return substr($clean, 0, 2) === '62' ? $clean :
+        '62' . (substr($clean, 0, 1) === '0' ? substr($clean, 1) : $clean);
+    }
+
     public function getRiwayatDashboard($id)
     {
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'owner') {
@@ -270,6 +277,7 @@ class PemesananController extends Controller
                     return [
                         'pemesanan_id' => $item->id,
                         'namaProduk' => $item->produk->namaProduk,
+                        'wa' => $this->formatPhone($item->noWa),
                         'namaUsaha' => $item->user ? $item->user->nama : $item->nama,
                         'harga' => $item->harga,
                         'jumlahPemesanan' => $item->jumlahPemesanan,

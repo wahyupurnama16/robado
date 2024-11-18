@@ -267,12 +267,12 @@
                             )
                         },
                         {
-                            name: "Status Pengiriman",
+                            name: "WA",
                             width: "200px",
-                            data: (row) => gridjs.html(
-                                `<span class="badge rounded p-1 bg-${row.statusPengiriman === 0 ? 'warning' : 'success'}">${row.statusPengiriman == 1 ?
-      'Sudah Dikirim' : 'Belum Dikirim'}</span>`
-                            )
+                            data: (row) => {
+                            return    gridjs.html(
+                                `<a class="text-dark" target="_blank" href="https://wa.me/${row.wa}?text=Terima%20kasih%20sudah%20memesan%20di%20kami%21%0A%0ANama%3A${row.namaUsaha}%0AJenis%20Roti%3A%20${row.namaProduk}%20%28${row.jumlahPemesanan}%29%0AHarga%3A${row.harga}%0ATotal%20Harga%3A${row.harga * row.jumlahPemesanan}%0A%0AKami%20tunggu%20kedatangannya%20di%20Toko.">${row.wa}</a>`
+                            )}
                         },
                         {
                             name: "Action",
