@@ -8,7 +8,7 @@
         <section class="mb-8">
             <div class="relative h-60 rounded-lg overflow-hidden shadow-lg">
                 <img alt="Bakery banner" loading="lazy" decoding="async" data-nimg="fill" sizes="100vw"
-                    src="{{ asset('/storage/produk/'. $produk->gambar) }}"
+                    src="https://robado-bakery.vercel.app/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1523294587484-bae6cc870010%3Fq%3D80%26w%3D2802%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&w=1920&q=75"
                     style="position: absolute; height: 100%; width: 100%; inset: 0px; object-fit: cover; color: transparent;">
                 <div
                     class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white">
@@ -86,8 +86,7 @@
                     data-price="{{ $produk->hargaProduk }}">
                     <div class="flex p-4">
                         <img alt="Roti Tawar" loading="lazy" width="80" height="80" decoding="async"
-                            class="rounded-md object-cover"
-                            src="https://robado-bakery.vercel.app/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1621930599436-32ba90132e3e%3Fq%3D80%26w%3D2940%26auto%3Dformat%26fit%3Dcrop%26ixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D&w=96&q=75"
+                            class="rounded-md object-cover" src="{{ asset('/storage/produk/'. $produk->gambar) }}"
                             style="color: transparent;">
                         <div class="ml-4 flex-grow">
                             <h3 class="product-name text-xl font-semibold mb-1">{{ $produk->namaProduk }}
