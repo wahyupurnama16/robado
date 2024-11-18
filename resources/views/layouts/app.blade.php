@@ -154,9 +154,9 @@
                                     <button type="submit" class="flex items-center gap-x-3.5 ">
                                         <i class=" material-symbols-rounded font-light text-2xl transition-all
                                         group-hover:fill-1"><span class="material-symbols-rounded">
-                                                {{ Auth::user() ? 'logout' : 'Login' }}
+                                                logout
                                             </span></i>
-                                        Keluar
+                                        {{ Auth::user() ? 'logout' : 'Login' }}
                                     </button>
                                 </form>
                             </div>
