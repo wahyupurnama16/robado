@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
+    public function index()
+    {
+        return view('laporan.laporanProduksi');
+
+    }
+
     public function store(Request $request)
     {
         try {
@@ -61,16 +67,31 @@ class LaporanController extends Controller
         return view('laporan.rencanaProduksi', $stats);
     }
 
-    public function apiData()
+    public function apiData($status = '')
     {
-        $data = DB::table('laporan')
-            ->join('produk', 'laporan.id_produk', '=', 'produk.id')
-            ->select(
-                'laporan.*',
-                'produk.namaProduk as nama_produk'
-            )
-            ->orderBy('laporan.created_at', 'desc')
-            ->get();
+        if ($status !== '') {
+            $data = DB::table('laporan')
+                ->join('produk', 'laporan.id_produk', '=', 'produk.id')
+                ->select(
+                    'laporan.*',
+                    'produk.namaProduk as nama_produk'
+                )
+                ->where('statusProduksi', $status)
+                ->orderBy('laporan.created_at', 'desc')
+                ->get();
+
+        } else {
+
+            $data = DB::table('laporan')
+                ->join('produk', 'laporan.id_produk', '=', 'produk.id')
+                ->select(
+                    'laporan.*',
+                    'produk.namaProduk as nama_produk'
+                )
+                ->where('statusProduksi', 0)
+                ->orderBy('laporan.created_at', 'desc')
+                ->get();
+        }
 
         return response()->json([
             'status' => 'success',

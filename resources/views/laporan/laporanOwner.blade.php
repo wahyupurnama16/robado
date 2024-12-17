@@ -50,12 +50,18 @@
         <form id="productionUpdateForm" class="space-y-4">
           @csrf
           @foreach ($products as $product)
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-3 gap-2">
             <div>
               <input type="hidden" name="produk[]" value="{{ $product->id }}">
               <input type="text" required readonly
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brown-500 focus:ring-brown-500"
                 placeholder="" value="{{ $product->namaProduk }}">
+            </div>
+
+            <div>
+              <input type="text" required readonly
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brown-500 focus:ring-brown-500"
+                placeholder="" value="{{ $product->jumlahProduk }}">
             </div>
 
             <div>
@@ -72,7 +78,7 @@
             </button>
             <button type="submit"
               class="px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-brown-700">
-              Simpan
+              Kirim
             </button>
           </div>
         </form>

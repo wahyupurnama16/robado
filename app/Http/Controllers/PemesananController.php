@@ -207,49 +207,57 @@ class PemesananController extends Controller
 
     }
 
-    public function getRiwayat($id)
+    public function getRiwayat(Request $request, $id)
     {
+        $period = $request->query('period', 'all');
+
+        $query = Pemesanan::with(['produk', 'user']);
+
+        // Filter berdasarkan role
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'owner') {
-            $riwayat = Pemesanan::with(['produk', 'user'])
-                ->where(function ($query) {
-                    $query->where('statusPembayaran', 0)
-                        ->orWhere('statusPengiriman', 0);
-                })
-                ->orderBy('created_at', 'DESC')
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'pemesanan_id' => $item->id,
-                        'namaProduk' => $item->produk->namaProduk,
-                        'namaUsaha' => $item->user ? $item->user->nama : $item->nama,
-                        'harga' => $item->harga,
-                        'jumlahPemesanan' => $item->jumlahPemesanan,
-                        'harga' => $item->harga,
-                        'tanggalPengiriman' => $item->tanggalPengiriman . ' ' . $item->jamPengiriman,
-                        'statusPembayaran' => $item->statusPembayaran,
-                        'statusUser' => $item->user ? $item->user->status : 0,
-                        'statusPengiriman' => $item->statusPengiriman,
-                    ];
-                });
+            $query->where(function ($query) {
+                $query->where('statusPembayaran', 0)
+                    ->orWhere('statusPengiriman', 0);
+            });
         } else {
-            $riwayat = Pemesanan::where('id_user', $id)
-                ->with(['produk', 'user'])
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'pemesanan_id' => $item->id,
-                        'namaProduk' => $item->produk->namaProduk,
-                        'namaUsaha' => $item->user ? $item->user->nama : $item->nama,
-                        'harga' => $item->harga,
-                        'jumlahPemesanan' => $item->jumlahPemesanan,
-                        'harga' => $item->harga,
-                        'tanggalPengiriman' => $item->tanggalPengiriman . ' ' . $item->jamPengiriman,
-                        'statusPembayaran' => $item->statusPembayaran,
-                        'statusUser' => $item->user->status,
-                        'statusPengiriman' => $item->statusPengiriman,
-                    ];
-                });
+            $query->where('id_user', $id);
         }
+
+        // Filter berdasarkan periode
+        switch ($period) {
+            case '1':
+                $query->where('tanggalPengiriman', '>=', now()->subWeek());
+                break;
+            case '2':
+                $query->where('tanggalPengiriman', '>=', now()->subWeeks(2));
+                break;
+            case '3':
+                $query->where('tanggalPengiriman', '>=', now()->subWeeks(3));
+                break;
+            case '4':
+                $query->where('tanggalPengiriman', '>=', now()->subWeeks(4));
+                break;
+            case 'month':
+                $query->whereMonth('tanggalPengiriman', now()->month)
+                    ->whereYear('tanggalPengiriman', now()->year);
+                break;
+        }
+
+        $riwayat = $query->orderBy('tanggalPengiriman', 'DESC')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'pemesanan_id' => $item->id,
+                    'namaProduk' => $item->produk->namaProduk,
+                    'namaUsaha' => $item->user ? $item->user->nama : $item->nama,
+                    'harga' => $item->harga,
+                    'jumlahPemesanan' => $item->jumlahPemesanan,
+                    'tanggalPengiriman' => $item->tanggalPengiriman . ' ' . $item->jamPengiriman,
+                    'statusPembayaran' => $item->statusPembayaran,
+                    'statusUser' => $item->user ? $item->user->status : 0,
+                    'statusPengiriman' => $item->statusPengiriman,
+                ];
+            });
 
         return response()->json(['data' => $riwayat]);
 
@@ -267,8 +275,7 @@ class PemesananController extends Controller
         if (Auth::user()->role == 'admin' || Auth::user()->role == 'owner') {
             $riwayat = Pemesanan::with(['produk', 'user'])
                 ->where(function ($query) {
-                    $query->where('statusPembayaran', 0)
-                        ->orWhere('statusPengiriman', 0);
+                    $query->where('statusPembayaran', 0);
                 })
                 ->whereNull('tanggalPengiriman')
                 ->orderBy('created_at', 'DESC')

@@ -26,29 +26,31 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @yield('css')
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <style>
+        .simplebar-content {
+            height: 90vh !important;
+        }
+    </style>
 </head>
 
 <body>
     @include('sweetalert::alert')
     <main>
         <div class="flex wrapper">
-
             <!-- Start Sidebar -->
             <aside id="app-menu"
                 class="hs-overlay fixed inset-y-0 start-0 z-[60] hidden w-64 -translate-x-full transform overflow-y-auto border-e border-default-200 bg-amber-800  transition-all duration-300 hs-overlay-open:translate-x-0 lg:bottom-0 lg:end-auto lg:z-30 lg:block lg:translate-x-0 rtl:translate-x-full rtl:hs-overlay-open:translate-x-0 rtl:lg:translate-x-0 print:hidden [--body-scroll:true] [--overlay-backdrop:true] lg:[--overlay-backdrop:false]">
-                <div class="sticky top-0 flex h-16 items-center justify-center px-6">
-                    <a href="/">
-                        <h1 class="text-xl text-white">
-                            Robado
-                        </h1>
-                        {{-- <img src="assets/images/logo-dark.png" alt="logo" class="flex h-6"> --}}
-                    </a>
+                <div class="sticky top-0 flex h-16 items-center  justify-between px-6">
+                    <h1 class="text-xl text-white">
+                        {{ !Auth::user() ? 'Robado guest' : Auth::user()->nama }}
+                    </h1>
+                    @if (Auth::user())
+                    <a href="{{ route('profile.edit') }}" class="text-white">Ubah</a>
+                    @endif
                 </div>
 
-                <div class="hs-accordion-group h-[calc(100%-72px)] p-4 ps-0" data-simplebar>
-                    <ul class="admin-menu flex w-full flex-col gap-1.5">
-
-
+                <div class="hs-accordion-group p-4 ps-0" data-simplebar>
+                    <ul class="admin-menu flex w-full flex-col gap-1.5 h-full">
 
                         @if (!Auth::user() || Auth::user() && Auth::user()->role !== 'baker')
                         <li class="menu-item">
@@ -57,16 +59,6 @@
                                 <i
                                     class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">home</i>
                                 Home
-                            </a>
-                        </li>
-                        @endif
-                        @if (Auth::user())
-                        <li class="menu-item">
-                            <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
-                                href="{{ route('profile.edit') }}">
-                                <i
-                                    class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">people</i>
-                                Profil
                             </a>
                         </li>
                         @endif
@@ -101,7 +93,10 @@
                                 Rencana Produksi
                             </a>
                         </li>
+
+
                         @endif
+
 
                         @if (Auth::user() && (Auth::user()->role === 'baker'))
                         <li class="menu-item">
@@ -138,6 +133,16 @@
                                 Riwayat {{ Auth::user() && Auth::user()->role == 'admin' ? 'Transaksi' : '' }}
                             </a>
                         </li>
+                        @if ((Auth::user()->role !== 'pelanggan'))
+                        <li class="menu-item">
+                            <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
+                                href="{{ route('laporan.index') }}">
+                                <i
+                                    class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">summarize</i>
+                                Laporan Produksi
+                            </a>
+                        </li>
+                        @endif
                         @endif
 
                         @if (!Auth::user())
@@ -159,22 +164,41 @@
                             </a>
                         </li>
                         @endif
+
+                        @if (!Auth::user())
+                        <!-- Menu item lainnya tetap di atas -->
                         <li class="menu-item">
-                            <div type="submit"
+                            <!-- Tambahkan mt-auto untuk push ke bawah -->
+                            <a class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700"
+                                href="{{ route('login') }}">
+                                <i
+                                    class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">
+                                    <span class="material-symbols-rounded">login</span>
+                                </i>
+                                Login
+                            </a>
+                        </li>
+                        @else
+                        <!-- Menu item lainnya tetap di atas -->
+                        <li class="menu-item mt-auto">
+                            <!-- Tambahkan mt-auto untuk push ke bawah -->
+                            <div
                                 class="group flex items-center gap-x-3.5 rounded-e-full px-4 py-2 text-sm font-medium text-default-700 transition-all hover:bg-default-100 text-white hover:text-gray-700">
-                                <form action="{{ route('logout') }}" method="POST">
+                                <form action="{{ route('logout') }}" method="POST" class="w-full">
                                     @method('POST')
                                     @csrf
-                                    <button type="submit" class="flex items-center gap-x-3.5 ">
-                                        <i class=" material-symbols-rounded font-light text-2xl transition-all
-                                        group-hover:fill-1"><span class="material-symbols-rounded">
-                                                logout
-                                            </span></i>
-                                        {{ Auth::user() ? 'logout' : 'Login' }}
+                                    <button type="submit" class="flex items-center gap-x-3.5 w-full">
+                                        <i
+                                            class="material-symbols-rounded font-light text-2xl transition-all group-hover:fill-1">
+                                            <span class="material-symbols-rounded">logout</span>
+                                        </i>
+                                        Logout
                                     </button>
                                 </form>
                             </div>
                         </li>
+                        @endif
+
                     </ul>
                 </div>
             </aside>

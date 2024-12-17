@@ -104,8 +104,7 @@
             <h2 class="text-3xl font-bold mb-6 text-center">
                 {{ Auth::user()->status == 2
                 ? 'Ketersediaan Roti di Toko'
-                : "Mohon
-                Konfirmasi Langganan Ke Admin" }}
+                : "Mohon Tunggu Konfirmasi Berlanggan dari Kami Pada Whatsapp Anda" }}
             </h2>
 
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
@@ -147,6 +146,11 @@
                                         <path d="M12 5v14"></path>
                                     </svg>
                                 </button>
+                            </div>
+                            <div>
+                                <a href="{{ route('cart.index') }}"
+                                    class="bg-amber-800 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded">Pesan
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -300,7 +304,7 @@
                             width: "200px",
                             data: (row) => {
                             return    gridjs.html(
-                                `<a class="text-dark" target="_blank" href="https://wa.me/${row.wa}?text=Terima%20kasih%20sudah%20memesan%20di%20kami%21%0A%0ANama%3A${row.namaUsaha}%0AJenis%20Roti%3A%20${row.namaProduk}%20%28${row.jumlahPemesanan}%29%0AHarga%3A${row.harga}%0ATotal%20Harga%3A${row.harga * row.jumlahPemesanan}%0A%0AKami%20tunggu%20kedatangannya%20di%20Toko.">${row.wa}</a>`
+                                `<a class="text-dark" target="_blank" href="https://wa.me/${row.wa}?text=Terima%20kasih%20sudah%20memesan%20di%20kami!%20%0ANama%3A%20${row.namaUsaha}%20%0AJenis%20Roti%3A%20${row.namaProduk}%20(${row.jumlahPemesanan})%20%0AHarga%3A%20${row.harga}%20%0ATotal%20Harga%3A%20${row.harga * row.jumlahPemesanan}%20%0A%0AKami%20tunggu%20kedatangannya%20di%20Toko.%0A%0AMetode%20Pembayaran%3A%0A%0ATransfer%20melalui%20rekening%20BPD%20Bali%3A%200100202540793%20a%2Fn%20I%20Made%20Sutresna%0A(Jika%20memilih%20transfer%2C%20mohon%20kirim%20bukti%20transfer%20melalui%20WhatsApp)%0ALangsung%C2%A0di%C2%A0Toko">${row.wa}</a>`
                             )}
                         },
                         {
@@ -311,15 +315,15 @@
                                 const isAdmin = {{ Auth::user()->role === 'admin' ? 'true' : 'false' }};
 
                                 if (isAdmin) {
-                                    if (row.statusPembayaran == 0) {
+                                    // if (row.statusPembayaran == 0) {
                                         buttons +=
                                             `<a href="/update/bayar/${row.pemesanan_id}/1" class="badge rounded p-1 bg-green-600 text-white">Bayar</a> `;
-                                    }
+                                    // }
 
-                                    if (row.statusPengiriman == 0) {
-                                        buttons +=
-                                            `<a href="/update/kirim/${row.pemesanan_id}/1" class="badge rounded p-1 bg-blue-600 text-white">kirim</a> `;
-                                    }
+                                    // if (row.statusPengiriman == 0) {
+                                    //     buttons +=
+                                    //         `<a href="/update/kirim/${row.pemesanan_id}/1" class="badge rounded p-1 bg-blue-600 text-white">kirim</a> `;
+                                    // }
 
                                     buttons += `<button onclick="handleDelete(${row.pemesanan_id})"
       class="badge rounded p-1 bg-red-600 text-white">Hapus</button>`;

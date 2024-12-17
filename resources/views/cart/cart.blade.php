@@ -76,12 +76,7 @@
                 placeholder="Nomor Wa" required />
             </div>
             <div class="space-y-4 text-sm md:text-base max-w-2xl mx-auto">
-              <p>Mohon maaf jika pemesan belum berlangganan, Robado Bakery Belum bisa melakukan
-                pengiriman.</p>
-              <p>Pesanan ini hanya berlaku sampai toko tutup hari ini di jam 22:00, dan pemesan wajib
-                mengambil serta
-                membayar di
-                toko Robado Bakery</p>
+              <p>Tolong ambil pesanan ke toko, pesanan berlaku sampai jam 22:00 hari ini.</p>
             </div>
             <div class="rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-2xl mx-auto">
               <div class="p-4 md:p-6 space-y-4 md:space-y-6">
@@ -103,8 +98,10 @@
                   </div>
                 </div>
                 <div class="bg-gray-100 h-32 md:h-48 rounded-md flex items-center justify-center">
-                  <span class="text-gray-500">Google
-                    Map</span>
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3943.858544134474!2d115.4878793747766!3d-8.704980491343987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd273286d8ecb2b%3A0x76ca9f41aff9bfd9!2sRobado%20Bakery!5e0!3m2!1sen!2sid!4v1734354585494!5m2!1sen!2sid"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
               </div>
             </div>
@@ -135,7 +132,7 @@
     </div>
     @endif
     <div class="flex justify-between items-center mt-8 bg-white p-4 rounded-lg shadow-sm"><span
-        class="text-brown-600 font-medium">Coba Periksa Kembali Pesanan Anda !!!</span>
+        class="text-brown-600 font-medium">Pesanan anda sudah sesuai?</span>
       <label class="inline-flex items-center cursor-pointer">
         <input type="checkbox" value="" class="sr-only peer">
         <div

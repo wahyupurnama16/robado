@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register') }}" id="form">
         @csrf
 
         <!-- Name -->
@@ -75,4 +75,60 @@
             </x-primary-button>
         </div>
     </form>
+
+    @section('js')
+    <script>
+        $(document).ready(function() {
+                // Tambahkan div untuk menampilkan pesan error
+                $('<div id="password-error" class="text-red-500 text-sm mt-1"></div>').insertAfter('#password');
+                $('<div id="password-error-confirmasi" class="text-red-500 text-sm mt-1"></div>').insertAfter(
+                    '#password_confirmation');
+
+                // Fungsi untuk validasi password
+                function validatePassword() {
+                    var password = $('#password').val();
+                    var confirmPassword = $('#password_confirmation').val();
+                    var errorMessages = [];
+
+                    // Reset border input
+                    $('#password, #password_confirmation').removeClass('border-red-500').addClass('border-gray-300');
+
+                    // Validasi panjang password
+                    if (password.length < 8) {
+                        errorMessages.push('Password harus minimal 8 karakter');
+                        $('#password').removeClass('border-gray-300').addClass('border-red-500');
+                    }
+
+
+                    // Tampilkan pesan error
+                    if (errorMessages.length > 0) {
+                        $('#password-error').html(errorMessages.join('<br>'));
+                        return false;
+                    } else if (password !== confirmPassword && confirmPassword !== '') {
+                        $('#password-error-confirmasi').html('Password tidak sama');
+                        $('#password_confirmation').removeClass('border-gray-300').addClass('border-red-500');
+                        return false;
+                    } else {
+                        $('#password-error-confirmasi').html('');
+                        $('#password-error').html('');
+                        return true;
+                    }
+                }
+
+                // Validasi saat input password berubah
+                $('#password, #password_confirmation').on('keyup', function() {
+                    validatePassword();
+                });
+
+                // Validasi saat form disubmit
+                $('#form').on('submit', function(e) {
+                    if (!validatePassword()) {
+                        e.preventDefault(); // Mencegah form disubmit jika validasi gagal
+                        return false;
+                    }
+                });
+
+            });
+    </script>
+    @endsection
 </x-guest-layout>

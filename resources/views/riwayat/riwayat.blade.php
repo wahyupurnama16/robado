@@ -4,11 +4,10 @@
     <link rel="stylesheet" href="{{ asset('assets/libs/gridjs/theme/mermaid.min') }}.css">
     @endsection
     <main class="flex-grow p-4 mx-auto w-full">
-        <h2 class="text-center text-2xl text-brown-600 font-semibold mb-8">Pemesanan</h2>
+        <h2 class="text-center text-2xl text-brown-600 font-semibold mb-8">Riwayat Transaksi</h2>
         <div class="card">
 
             @if (Auth::user() && Auth::user()->role == 'admin')
-
             <!-- Button to trigger modal -->
             <div class="flex justify-end items-center mb-6 absolute top-8 right-7 z-10">
                 <button type="button" onclick="openModal()"
@@ -23,7 +22,8 @@
                 <div
                     class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white transform transition-transform duration-300">
                     <div class="mt-3">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Pilih Waktu Pengiriman Laporan</h3>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Pilih Waktu Pengiriman Laporan
+                        </h3>
                         <form action="{{ route('pemesanan.sendLaporanOwner') }}" method="POST">
                             @csrf
                             <div class="mb-4">
@@ -60,9 +60,19 @@
                     </div>
                 </div>
             </div>
-
             @endif
             <div class="card-body">
+                <div class="mb-4 flex">
+                    <select id="filterPeriod"
+                        class="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">Semua Data</option>
+                        <option value="1">1 Minggu Terakhir</option>
+                        <option value="2">2 Minggu Terakhir</option>
+                        <option value="3">3 Minggu Terakhir</option>
+                        <option value="4">4 Minggu Terakhir</option>
+                        <option value="month">Bulan Ini</option>
+                    </select>
+                </div>
                 <div id="table-gridjs"></div>
             </div>
         </div>
@@ -164,9 +174,14 @@
                 }
             }
 
+            let grid;
+            function initGrid(filterPeriod = 'all') {
+                const serverUrl = `/get/riwayat/{{ Auth::user()->id }}?period=${filterPeriod}`;
 
-            document.getElementById("table-gridjs") &&
-                new gridjs.Grid({
+                if (grid) {
+                    grid.destroy();
+                }
+                grid = new gridjs.Grid({
                     columns: [{
                             name: "ID",
                             width: "80px",
@@ -264,7 +279,7 @@
                     sort: !0,
                     search: !0,
                     server: {
-                        url: `/get/riwayat/{{ Auth::user()->id }}`,
+                        url: serverUrl,
                         then: data => {
                             return data.data.map((item, index) => ({
                                 ...item,
@@ -279,6 +294,18 @@
                         },
                     }
                 }).render(document.getElementById("table-gridjs"));
+
+            }
+
+            // Event listener untuk filter
+            document.getElementById('filterPeriod').addEventListener('change', function(e) {
+                initGrid(e.target.value);
+            });
+            
+            // Inisialisasi grid pertama kali
+            document.addEventListener('DOMContentLoaded', function() {
+                initGrid();
+            });
     </script>
     @endsection
 </x-app-layout>

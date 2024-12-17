@@ -21,9 +21,10 @@ Route::controller(DashboardController::class)->name('dashboard.')->group(functio
     Route::get('/aturan-berlangganan', 'aturanBerlangganan')->name('aturanBerlangganan');
     Route::get('/tentang-kami', 'tentangKami')->name('tentangKami');
 });
+Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
 Route::post('/laporan', [LaporanController::class, 'store'])->name('laporan.store');
 Route::get('/rencana-produksi', [LaporanController::class, 'rencanaProduksi'])->name('laporan.rencanaProduksi');
-Route::get('/api/laporan/produksi', [LaporanController::class, 'apiData'])->name('api.laporan.produksi');
+Route::get('/api/laporan/produksi/{status?}', [LaporanController::class, 'apiData'])->name('api.laporan.produksi');
 Route::put('/api/laporan/produksi/{id}', [LaporanController::class, 'update'])->name('api.laporan.produksi.update');
 
 Route::controller(PemesananController::class)->name('pemesanan.')->group(function () {

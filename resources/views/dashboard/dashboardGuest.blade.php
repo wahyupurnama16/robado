@@ -55,6 +55,11 @@
                                     </svg>
                                 </button>
                             </div>
+                            <div>
+                                <a href="{{ route('cart.index') }}"
+                                    class="bg-amber-800 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded">Pesan
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

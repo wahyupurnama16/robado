@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{ asset('assets/libs/gridjs/theme/mermaid.min') }}.css">
     @endsection
     <main class="flex-grow p-4 mx-auto w-full">
-        <h2 class="text-center text-2xl text-brown-600 font-semibold mb-8">Pemesanan</h2>
+        <h2 class="text-center text-2xl text-brown-600 font-semibold mb-8">Riwayat Transaksi</h2>
         <div class="card">
 
             @if (Auth::user() && Auth::user()->role == 'admin' && !Request::is('riwayat/*'))
