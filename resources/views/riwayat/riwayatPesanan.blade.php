@@ -22,7 +22,8 @@
                 <div
                     class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white transform transition-transform duration-300">
                     <div class="mt-3">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Pilih Waktu Pengiriman Laporan</h3>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Pilih Waktu Pengiriman Laporan
+                        </h3>
                         <form action="{{ route('pemesanan.sendLaporanOwner') }}" method="POST">
                             @csrf
                             <div class="mb-4">
@@ -59,9 +60,19 @@
                     </div>
                 </div>
             </div>
-
             @endif
             <div class="card-body">
+                <div class="mb-4 flex">
+                    <select id="filterPeriod"
+                        class="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">Semua Data</option>
+                        <option value="1">1 Minggu Terakhir</option>
+                        <option value="2">2 Minggu Terakhir</option>
+                        <option value="3">3 Minggu Terakhir</option>
+                        <option value="4">4 Minggu Terakhir</option>
+                        <option value="month">Bulan Ini</option>
+                    </select>
+                </div>
                 <div id="table-gridjs"></div>
             </div>
         </div>
@@ -164,8 +175,135 @@
             }
 
 
-            document.getElementById("table-gridjs") &&
-                new gridjs.Grid({
+            // document.getElementById("table-gridjs") &&
+            //     new gridjs.Grid({
+            //         columns: [{
+            //                 name: "ID",
+            //                 width: "80px",
+            //                 data: (row) => row.id
+            //             },
+            //             {
+            //                 name: "Nama Pemesan",
+            //                 width: "150px",
+            //                 data: (row) => row.namaUsaha
+            //             },
+            //             {
+            //                 name: "Produk",
+            //                 width: "150px",
+            //                 data: (row) => row.namaProduk
+            //             },
+            //             {
+            //                 name: "Total Pesan",
+            //                 width: "150px",
+            //                 data: (row) => row.jumlahPemesanan
+            //             },
+            //             {
+            //                 name: "Harga",
+            //                 width: "130px",
+            //                 data: (row) => gridjs.html(
+            //                     formatRupiah(row.harga)
+            //                 )
+            //             },
+            //             {
+            //                 name: "Total Harga",
+            //                 width: "150px",
+            //                 data: (row) => gridjs.html(
+            //                     formatRupiah(row.harga * row.jumlahPemesanan)
+            //                 )
+            //             },
+            //             {
+            //                 name: "Tanggal Pemesanan",
+            //                 width: "250px",
+            //                 data: (row) =>
+            //                     gridjs.html(
+            //                         (row.tanggalPengiriman !== " ") ?
+            //                         formatDate(row.tanggalPengiriman) : 'Ambil Ke Toko'
+            //                     )
+            //             },
+            //             {
+            //                 name: "Status Pembayaran",
+            //                 width: "200px",
+            //                 data: (row) => gridjs.html(
+            //                     `<span
+    //           class="badge rounded p-1 bg-${row.statusPembayaran === 0 ? 'warning' : 'success'}">${row.statusPembayaran == 1 ? 'Sudah Bayar' : 'Belum Bayar'}</span>`
+            //                 )
+            //             },
+            //             {
+            //                 name: "Status Pengiriman",
+            //                 width: "200px",
+            //                 data: (row) => gridjs.html(
+            //                     `<span
+    //           class="badge rounded p-1 bg-${row.statusPengiriman === 0 ? 'warning' : 'success'}">${row.statusPengiriman == 1 ? 'Sudah Dikirim' : 'Belum Dikirim'}</span>`
+            //                 )
+            //             },
+            //             {
+            //                 name: "Action",
+            //                 width: "300px",
+            //                 data: (row) => {
+            //                     let buttons = '';
+            //                     const isAdmin = {{ Auth::user()->role === 'admin' ? 'true' : 'false' }};
+
+            //                     if (isAdmin) {
+            //                         if (row.statusPembayaran == 0) {
+            //                             buttons +=
+            //                                 `<a href="/update/bayar/${row.pemesanan_id}/1" class="badge rounded p-1 bg-green-600 text-white">Bayar</a> `;
+            //                         }
+
+            //                         if (row.statusPengiriman == 0) {
+            //                             buttons +=
+            //                                 `<a href="/update/kirim/${row.pemesanan_id}/1" class="badge rounded p-1 bg-blue-600 text-white">kirim</a> `;
+            //                         }
+
+            //                         buttons += `<button onclick="handleDelete(${row.pemesanan_id})"
+    //                         class="badge rounded p-1 bg-red-600 text-white">Hapus</button>`;
+
+            //                     }
+
+            //                     // Tombol Details selalu ditampilkan
+            //                     buttons +=
+            //                         `<a href='/details/${row.pemesanan_id}' class="badge rounded p-1 bg-stone-600 text-white">Details</a>`;
+
+
+            //                     return gridjs.html(buttons);
+            //                 }
+            //             },
+            //         ],
+            //         pagination: {
+            //             limit: 10
+            //         },
+            //         sort: !0,
+            //         search: !0,
+            //         server: {
+            //             url: `/get/riwayat/pesanan/{{ Auth::user()->id }}`,
+            //             then: data => {
+            //                 return data.data.map((item, index) => ({
+            //                     ...item,
+            //                     id: index + 1
+            //                 }))
+            //             },
+            //             handle: (res) => {
+            //                 if (!res.ok) {
+            //                     throw Error("Gagal mengambil data");
+            //                 }
+            //                 return res.json();
+            //             },
+            //         }
+            //     }).render(document.getElementById("table-gridjs"));
+
+            let grid; // Store the grid instance
+
+            // Function to initialize the grid with filtered data
+            function initializeGrid(filterPeriod = 'all') {
+                const baseUrl = `/get/riwayat/pesanan/{{ Auth::user()->id }}`;
+                const filterUrl = `${baseUrl}?period=${filterPeriod}`;
+
+                // If grid exists, destroy it first
+                if (grid) {
+                    grid.destroy();
+                }
+
+                // Initialize new grid with filtered data
+                grid = new gridjs.Grid({
                     columns: [{
                             name: "ID",
                             width: "80px",
@@ -213,57 +351,27 @@
                             name: "Status Pembayaran",
                             width: "200px",
                             data: (row) => gridjs.html(
-                                `<span
-                      class="badge rounded p-1 bg-${row.statusPembayaran === 0 ? 'warning' : 'success'}">${row.statusPembayaran == 1 ? 'Sudah Bayar' : 'Belum Bayar'}</span>`
+                                `<span class="badge rounded p-1 bg-${row.statusPembayaran === 0 ? 'warning' : 'success'}">${row.statusPembayaran == 1 ?
+                'Sudah Bayar' : 'Belum Bayar'}</span>`
                             )
                         },
                         {
                             name: "Status Pengiriman",
                             width: "200px",
                             data: (row) => gridjs.html(
-                                `<span
-                      class="badge rounded p-1 bg-${row.statusPengiriman === 0 ? 'warning' : 'success'}">${row.statusPengiriman == 1 ? 'Sudah Dikirim' : 'Belum Dikirim'}</span>`
+                                `<span class="badge rounded p-1 bg-${row.statusPengiriman === 0 ? 'warning' : 'success'}">${row.statusPengiriman == 1 ?
+                'Sudah Dikirim' : 'Belum Dikirim'}</span>`
                             )
                         },
-                        {
-                            name: "Action",
-                            width: "300px",
-                            data: (row) => {
-                                let buttons = '';
-                                const isAdmin = {{ Auth::user()->role === 'admin' ? 'true' : 'false' }};
-
-                                if (isAdmin) {
-                                    if (row.statusPembayaran == 0) {
-                                        buttons +=
-                                            `<a href="/update/bayar/${row.pemesanan_id}/1" class="badge rounded p-1 bg-green-600 text-white">Bayar</a> `;
-                                    }
-
-                                    if (row.statusPengiriman == 0) {
-                                        buttons +=
-                                            `<a href="/update/kirim/${row.pemesanan_id}/1" class="badge rounded p-1 bg-blue-600 text-white">kirim</a> `;
-                                    }
-
-                                    buttons += `<button onclick="handleDelete(${row.pemesanan_id})"
-                                    class="badge rounded p-1 bg-red-600 text-white">Hapus</button>`;
-
-                                }
-
-                                // Tombol Details selalu ditampilkan
-                                buttons +=
-                                    `<a href='/details/${row.pemesanan_id}' class="badge rounded p-1 bg-stone-600 text-white">Details</a>`;
-
-
-                                return gridjs.html(buttons);
-                            }
-                        },
+                       
                     ],
                     pagination: {
                         limit: 10
                     },
-                    sort: !0,
-                    search: !0,
+                    sort: true,
+                    search: true,
                     server: {
-                        url: `/get/riwayat/pesanan/{{ Auth::user()->id }}`,
+                        url: filterUrl,
                         then: data => {
                             return data.data.map((item, index) => ({
                                 ...item,
@@ -278,6 +386,16 @@
                         },
                     }
                 }).render(document.getElementById("table-gridjs"));
+            }
+
+            // Initialize grid with default 'all' filter
+            initializeGrid();
+
+            // Handle filter change
+            $('#filterPeriod').on('change', function() {
+                const selectedPeriod = $(this).val();
+                initializeGrid(selectedPeriod);
+            });
     </script>
     @endsection
 </x-app-layout>

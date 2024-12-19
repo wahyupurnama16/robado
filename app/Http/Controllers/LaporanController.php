@@ -67,31 +67,46 @@ class LaporanController extends Controller
         return view('laporan.rencanaProduksi', $stats);
     }
 
-    public function apiData($status = '')
+    public function apiData(Request $request, $status = '')
     {
+        $query = DB::table('laporan')
+            ->join('produk', 'laporan.id_produk', '=', 'produk.id')
+            ->select(
+                'laporan.*',
+                'produk.namaProduk as nama_produk'
+            )
+            ->where('statusProduksi', $status)
+            ->orderBy('laporan.created_at', 'desc');
+
+        switch ($request->period) {
+            case '1':
+                $query->where('laporan.created_at', '>=', now()->subWeek());
+                break;
+            case '2':
+                $query->where('laporan.created_at', '>=', now()->subWeeks(2));
+                break;
+            case '3':
+                $query->where('laporan.created_at', '>=', now()->subWeeks(3));
+                break;
+            case '4':
+                $query->where('laporan.created_at', '>=', now()->subWeeks(4));
+                break;
+            case 'month':
+                $query->whereMonth('laporan.created_at', now()->month)
+                    ->whereYear('laporan.created_at', now()->year);
+                break;
+        }
         if ($status !== '') {
-            $data = DB::table('laporan')
-                ->join('produk', 'laporan.id_produk', '=', 'produk.id')
-                ->select(
-                    'laporan.*',
-                    'produk.namaProduk as nama_produk'
-                )
-                ->where('statusProduksi', $status)
+
+            $query->where('statusProduksi', $status)
                 ->orderBy('laporan.created_at', 'desc')
                 ->get();
 
         } else {
+            $query->where('statusProduksi', 0);
 
-            $data = DB::table('laporan')
-                ->join('produk', 'laporan.id_produk', '=', 'produk.id')
-                ->select(
-                    'laporan.*',
-                    'produk.namaProduk as nama_produk'
-                )
-                ->where('statusProduksi', 0)
-                ->orderBy('laporan.created_at', 'desc')
-                ->get();
         }
+        $data = $query->get();
 
         return response()->json([
             'status' => 'success',

@@ -9,6 +9,17 @@
 
         <div class="card">
             <div class="card-body">
+                <div class="mb-4 flex">
+                    <select id="filterPeriod"
+                        class="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">Semua Data</option>
+                        <option value="1">1 Minggu Terakhir</option>
+                        <option value="2">2 Minggu Terakhir</option>
+                        <option value="3">3 Minggu Terakhir</option>
+                        <option value="4">4 Minggu Terakhir</option>
+                        <option value="month">Bulan Ini</option>
+                    </select>
+                </div>
                 <div id="table-gridjs"></div>
             </div>
         </div>
@@ -22,7 +33,7 @@
 
     <script>
         const IS_BAKER = {{ json_encode(Auth::user()->role == 'baker' ? true : false) }};
-    // Format functions
+            // Format functions
             function formatDate(dateString) {
                 if (!dateString) return '-';
                 try {
@@ -50,14 +61,14 @@
 
             // Action button
             function getActionButton(row) {
-              if (!IS_BAKER) return '';
-              
+                if (!IS_BAKER) return '';
+
                 const data = {
                     id: row.id,
                     nama_produk: row.nama_produk,
                     jumlahProduksi: row.jumlahProduksi,
                     hasilProduksi: row.hasilProduksi,
-                    idProduksi:row.idProduksi
+                    idProduksi: row.idProduksi
                 };
 
                 return gridjs.html(`
@@ -88,60 +99,81 @@
                 modal.classList.add('hidden');
                 document.getElementById('productionUpdateForm').reset();
             }
+            let grid;
 
-            // Initialize Grid
-            new gridjs.Grid({
-                columns: [{
-                        name: "No",
-                        width: "70px",
-                        data: (row) => row.id
-                    },
-                    {
-                        name: "Produk",
-                        width: "150px",
-                        data: (row) => row.nama_produk || '-'
-                    },
-                    {
-                        name: "Rencana Produksi",
-                        width: "130px",
-                        data: (row) => row.jumlahProduksi
-                    },
-                    {
-                        name: "Hasil Produksi",
-                        width: "130px",
-                        data: (row) => row.hasilProduksi || 0
-                    },
-                    {
-                        name: "Status",
-                        width: "120px",
-                        data: (row) => gridjs.html(getStatusBadge(row.statusProduksi))
-                    },
-                    {
-                    name: "Tanggal Dibuat",
-                    width: "180px",
-                    data: (row) => formatDate(row.created_at)
-                    },
-                ],
-                pagination: {
-                    limit: 10
-                },
-                sort: true,
-                search: true,
-                server: {
-                    url: '/api/laporan/produksi/2',
-                    then: data => data.data.map((item, index) => ({
-                        ...item,
-                        id: index + 1,
-                        idProduksi:item.id
-                    })),
-                    handle: (res) => {
-                        if (!res.ok) {
-                            throw Error("Gagal mengambil data");
-                        }
-                        return res.json();
-                    }
+            function initializeGrid(filterPeriod = 'all') {
+                // If grid exists, destroy it first
+                if (grid) {
+                    grid.destroy();
                 }
-            }).render(document.getElementById("table-gridjs"));
+
+                // Build the URL with filter parameter
+                const baseUrl = '/api/laporan/produksi/2';
+                const filterUrl = `${baseUrl}?period=${filterPeriod}`;
+
+                // Initialize new grid with filtered data
+                grid = new gridjs.Grid({
+                    columns: [{
+                            name: "No",
+                            width: "70px",
+                            data: (row) => row.id
+                        },
+                        {
+                            name: "Produk",
+                            width: "150px",
+                            data: (row) => row.nama_produk || '-'
+                        },
+                        {
+                            name: "Rencana Produksi",
+                            width: "130px",
+                            data: (row) => row.jumlahProduksi
+                        },
+                        {
+                            name: "Hasil Produksi",
+                            width: "130px",
+                            data: (row) => row.hasilProduksi || 0
+                        },
+                        {
+                            name: "Status",
+                            width: "120px",
+                            data: (row) => gridjs.html(getStatusBadge(row.statusProduksi))
+                        },
+                        {
+                            name: "Tanggal Dibuat",
+                            width: "180px",
+                            data: (row) => formatDate(row.created_at)
+                        }
+                    ],
+                    pagination: {
+                        limit: 10
+                    },
+                    sort: true,
+                    search: true,
+                    server: {
+                        url: filterUrl,
+                        then: data => data.data.map((item, index) => ({
+                            ...item,
+                            id: index + 1,
+                            idProduksi: item.id
+                        })),
+                        handle: (res) => {
+                            if (!res.ok) {
+                                throw Error("Gagal mengambil data");
+                            }
+                            return res.json();
+                        }
+                    }
+                }).render(document.getElementById("table-gridjs"));
+            }
+
+            // Initialize grid with default 'all' filter
+            initializeGrid();
+
+            // Handle filter change
+            $('#filterPeriod').on('change', function() {
+                const selectedPeriod = $(this).val();
+                initializeGrid(selectedPeriod);
+            });
 
             // Event Listeners
             document.querySelectorAll('.closeModal').forEach(button => {
